@@ -21,11 +21,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = ViewController()
         window?.makeKeyAndVisible()
     
-        DebugPane.start {
+        DebugPane.start(setup: [ShowTimeBlade.setup]) {
             ShowTimeBlade()
         }
-
-        ShowTime.enabled = .never
 
         return true
     }

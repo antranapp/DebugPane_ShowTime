@@ -9,9 +9,12 @@ import TweakPane
 import Combine
 
 public struct ShowTimeBlade: Blade {
+    fileprivate static let settingKey = "app.antran.debugpane.showtime"
     public var name: String? = "ShowTime"
     
-    public init() {}
+    public init() {
+        ShowTime.enabled = UserDefaults.standard.bool(forKey: ShowTimeBlade.settingKey) ? .always : .never
+    }
     
     public func render() -> AnyView {
         AnyView(ContentView())
@@ -33,9 +36,18 @@ extension ContentView {
         private var cancellable: AnyCancellable?
         
         init() {
-            cancellable = $enableShowTime.sink { value in
+            enableShowTime = ShowTime.enabled == .always
+            
+            cancellable = $enableShowTime.dropFirst().sink { value in
                 ShowTime.enabled = value ? .always : .never
+                UserDefaults.standard.set(value, forKey: ShowTimeBlade.settingKey)
             }
         }
+    }
+}
+
+extension ShowTimeBlade {
+    public static func setup() {
+        ShowTime.enabled = UserDefaults.standard.bool(forKey: ShowTimeBlade.settingKey) ? .always : .never
     }
 }
